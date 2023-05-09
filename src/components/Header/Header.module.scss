@@ -1,0 +1,44 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 15px 20px;
+  margin-bottom: 25px;
+
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  line-height: 28px;
+
+  background-color: #fff;
+
+  z-index: 2;
+
+  &__logo {
+    color: #000;
+  }
+
+  &__authorization {
+    display: flex;
+    align-items: center;
+  }
+
+  &__sign-in {
+    margin-right: 45px;
+
+    color: #000;
+  }
+
+  &__sign-up {
+    padding: 10px 20px;
+
+    color: #52c41a;
+
+    border: 1px solid #52c41a;
+    border-radius: 5px;
+  }
+}
