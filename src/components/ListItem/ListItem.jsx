@@ -31,11 +31,21 @@ const ListItem = ({
     day: 'numeric',
   });
 
+  function sanitizeImageUrl(imageUrl) {
+    const url = new URL(imageUrl, 'http://dummyurl.com');
+    if (url.protocol === 'javascript:') {
+      return '';
+    }
+    return imageUrl;
+  }
+
+  const sanitizedImage = sanitizeImageUrl(image);
+
   return (
     <li className={classes['list__post']}>
       <div className={classes['list__header']}>
         <div className={classes['list__box']}>
-          <Link to={`article/${slug}`} className={classes['list__title']}>
+          <Link to={`articles/${slug}`} className={classes['list__title']}>
             {title}
           </Link>
           <img className={classes['list__heart']} src={heart} alt="icon" />
@@ -47,7 +57,7 @@ const ListItem = ({
             <span className={classes['list__date']}>{formattedDate}</span>
           </div>
           <div className={classes['list__avatar']}>
-            <img src={image} alt="avatar" />
+            <img src={sanitizedImage} alt="avatar" />
           </div>
         </div>
       </div>

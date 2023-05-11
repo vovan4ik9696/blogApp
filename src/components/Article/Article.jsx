@@ -26,7 +26,6 @@ const Article = () => {
     return <h1>{error}</h1>;
   }
 
-  console.log(article);
   const {
     title,
     favoritesCount,

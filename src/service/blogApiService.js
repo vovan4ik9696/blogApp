@@ -15,4 +15,26 @@ export default class BlogApiService {
     const response = await axios.get(`${this._api}articles/${slug}`);
     return response.data;
   };
+
+  newUser = async (userData) => {
+    const registerUser = await axios.post(`${this._api}users`, userData);
+    return registerUser.data;
+  };
+
+  postUserData = async (userData) => {
+    const logUser = await axios.post(`${this._api}users/login`, userData);
+    return logUser.data;
+  };
+
+  updateUserDate = async (userData, token) => {
+    const config = {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    };
+
+    const updateUser = await axios.put(`${this._api}user`, userData, config);
+    console.log(updateUser.data);
+    return updateUser.data;
+  };
 }

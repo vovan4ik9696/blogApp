@@ -4,8 +4,10 @@ import { Pagination } from 'antd';
 
 import { fetchArticles } from '../../store/articlesSlice';
 import ListItem from '../ListItem/ListItem';
+import { setUserData } from '../../store/userSlice';
 
 import classes from './List.module.scss';
+
 import './customPagination.css';
 
 const List = () => {
@@ -18,7 +20,25 @@ const List = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    const userData = {
+      image: null,
+      token: null,
+      email: null,
+      username: null,
+    };
+
+    const initialize = () => {
+      userData.token = localStorage.getItem('authToken');
+      userData.username = localStorage.getItem('username');
+      userData.image = localStorage.getItem('imageUrl');
+      userData.email = localStorage.getItem('email');
+      console.log(userData);
+      if (userData.token) {
+        dispatch(setUserData(userData));
+      }
+    };
     dispatch(fetchArticles());
+    initialize();
   }, []);
 
   const onPaginationCgange = (page) => {
