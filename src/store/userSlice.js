@@ -39,8 +39,6 @@ export const fetchUserUpdate = createAsyncThunk(
   'user/fetchUserUpdate',
   async ([userData, token], { rejectWithValue, dispatch }) => {
     try {
-      console.log('123123123');
-      console.log(userData, token);
       const response = await blogApiService.updateUserDate(userData, token);
       dispatch(addUser(response.user));
       localStorage.setItem('username', response.user.username);

@@ -1,4 +1,6 @@
 .article {
+  display: flex;
+  justify-content: space-between;
   padding: 15px 15px 25px;
 
   font-family: 'Inter', sans-serif;
@@ -9,11 +11,7 @@
 
   &__header {
     display: flex;
-    justify-content: space-between;
-  }
-
-  &__box {
-    display: flex;
+    margin-bottom: 5px;
   }
 
   &__title {
@@ -42,8 +40,36 @@
     transform: translateY(3px);
   }
 
-  &__user {
+  &__tags {
     display: flex;
+    margin-bottom: 16px !important;
+  }
+
+  &__tag {
+    padding: 3px 5px;
+
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 2px;
+
+    & + & {
+      margin-left: 8px;
+    }
+  }
+
+  &__description {
+    max-width: 680px;
+    margin-bottom: 25px;
+
+    font-size: 12px;
+    line-height: 22px;
+
+    opacity: 50%;
+  }
+
+  &__inner {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 30px;
   }
 
   &__name {
@@ -77,54 +103,24 @@
     opacity: 50%;
   }
 
-  &__tags {
-    display: flex;
-    margin-bottom: 7px !important;
-  }
+  &__controls-btn {
+    padding: 6px 17px;
 
-  &__tag {
-    padding: 3px 5px;
-
-    border: 1px solid rgba(0, 0, 0, 0.5);
-    border-radius: 2px;
-
-    & + & {
-      margin-left: 8px;
-    }
-  }
-
-  &__description {
-    max-width: 680px;
-    margin-bottom: 25px;
-
-    font-size: 12px;
+    font-size: 14px;
     line-height: 22px;
 
-    opacity: 50%;
-  }
+    border: 1px solid;
+    border-radius: 5px;
 
-  &__text-title {
-    margin-bottom: 10px;
+    &--delete {
+      margin-right: 12px;
 
-    font-size: 20px;
-    font-weight: 400;
-  }
-
-  &__text {
-    h3 {
-      font-size: 20px;
-      font-weight: 400;
+      color: #f5222d;
+      border-color: #f5222d;
     }
-
-    p {
-      margin-bottom: 25px;
-      font-size: 14px;
-      line-height: 22px;
+    &--edit {
+      color: #52c41a;
+      border-color: #52c41a;
     }
-  }
-
-  &__list {
-    padding-left: 25px !important;
-    font-size: 14px;
   }
 }

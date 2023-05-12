@@ -7,14 +7,14 @@ import formClasses from '../forms.module.scss';
 
 const EditProfile = () => {
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.userState.userData.token);
+  const { token, username, email, imageUrl } = useSelector((state) => state.userState.userData);
 
   const {
     register,
     formState: { errors },
     handleSubmit,
     reset,
-  } = useForm({ mode: 'onBlur' });
+  } = useForm({ mode: 'onBlur', defaultValues: { username, email, image: imageUrl } });
 
   const onSubmit = (data) => {
     const { email, pass: password, username, image } = data;

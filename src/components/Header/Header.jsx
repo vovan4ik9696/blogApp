@@ -57,7 +57,7 @@ const IsAuthHeader = () => {
   };
   return (
     <>
-      <Link className={classes['header__create']} to="/">
+      <Link className={classes['header__create']} to="/new-article">
         Create article
       </Link>
       <Link className={classes['header__profile']} to="/profile">

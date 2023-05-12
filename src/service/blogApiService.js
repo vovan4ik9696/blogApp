@@ -3,16 +3,23 @@ import axios from 'axios';
 export default class BlogApiService {
   _api = 'https://blog.kata.academy/api/';
 
-  getArticles = async (page) => {
+  getArticles = async (page, token) => {
     const offset = page * 20 - 20;
     const response = await axios.get(`${this._api}articles`, {
       params: { offset },
+      headers: {
+        Authorization: `Token ${token}`,
+      },
     });
     return response.data;
   };
 
-  getArticle = async (slug) => {
-    const response = await axios.get(`${this._api}articles/${slug}`);
+  getArticle = async (slug, token) => {
+    const response = await axios.get(`${this._api}articles/${slug}`, {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    });
     return response.data;
   };
 
@@ -34,7 +41,48 @@ export default class BlogApiService {
     };
 
     const updateUser = await axios.put(`${this._api}user`, userData, config);
-    console.log(updateUser.data);
     return updateUser.data;
+  };
+
+  postCreateArticle = async (userData, token) => {
+    const config = {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    };
+
+    await axios.post(`${this._api}articles`, userData, config);
+  };
+
+  updateArticle = async (slug, userData, token) => {
+    const config = {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    };
+    const response = await axios.put(`${this._api}articles/${slug}`, userData, config);
+    return response.data;
+  };
+
+  deleteArticle = async (slug, token) => {
+    const config = {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    };
+    await axios.delete(`${this._api}articles/${slug}`, config);
+  };
+
+  favoriteArticle = async (slug, token, doing) => {
+    const config = {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    };
+    if (!doing) {
+      return await axios.post(`${this._api}articles/${slug}/favorite`, null, config);
+    } else if (doing) {
+      return await axios.delete(`${this._api}articles/${slug}/favorite`, config);
+    }
   };
 }

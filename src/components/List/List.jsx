@@ -4,7 +4,6 @@ import { Pagination } from 'antd';
 
 import { fetchArticles } from '../../store/articlesSlice';
 import ListItem from '../ListItem/ListItem';
-import { setUserData } from '../../store/userSlice';
 
 import classes from './List.module.scss';
 
@@ -14,36 +13,23 @@ const List = () => {
   const articles = useSelector((state) => state.articlesState.articles);
   const { status, error } = useSelector((state) => state.articlesState);
   const articlesCount = useSelector((state) => state.articlesState.articlesCount);
+  const token = useSelector((state) => state.userState.userData.token);
 
   const [current, setCurrent] = useState(1);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const userData = {
-      image: null,
-      token: null,
-      email: null,
-      username: null,
-    };
-
-    const initialize = () => {
-      userData.token = localStorage.getItem('authToken');
-      userData.username = localStorage.getItem('username');
-      userData.image = localStorage.getItem('imageUrl');
-      userData.email = localStorage.getItem('email');
-      console.log(userData);
-      if (userData.token) {
-        dispatch(setUserData(userData));
-      }
-    };
-    dispatch(fetchArticles());
-    initialize();
-  }, []);
+    if (token) {
+      dispatch(fetchArticles([1, token]));
+    } else {
+      dispatch(fetchArticles([]));
+    }
+  }, [token]);
 
   const onPaginationCgange = (page) => {
     setCurrent(page);
-    dispatch(fetchArticles(page));
+    dispatch(fetchArticles([page, token]));
   };
 
   const postsList = articles.length !== 0 ? articles.map((item) => <ListItem key={item.slug} post={item} />) : [];
