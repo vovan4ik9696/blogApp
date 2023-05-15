@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Popconfirm, message } from 'antd';
+import { Popconfirm, message } from 'antd';
 import Markdown from 'markdown-to-jsx';
 
-import { fetchArticle, fetchDeleteArticle } from '../../store/articlesSlice';
+import { fetchArticle, fetchDeleteArticle, fetchFavoriteArticle } from '../../store/articlesSlice';
 import heart from '../images/heart.svg';
 import heartRed from '../images/heart-red.svg';
 
@@ -63,17 +63,21 @@ const Article = () => {
     navigate('/');
   };
 
+  const handleLike = () => {
+    !!token && dispatch(fetchFavoriteArticle([slug, token, favorited]));
+  };
+
   const btnsControl = username === profileName && (
     <div className={classes['article__controls']}>
       <Popconfirm
         className={`${classes['article__controls-btn']} ${classes['article__controls-btn--delete']}`}
-        title="Delete the task"
-        description="Are you sure to delete this task?"
+        title="Delete the article"
+        description="Are you sure to delete this article?"
         onConfirm={() => deleteArticle(slug, token)}
         okText="Yes"
         cancelText="No"
       >
-        <Button type="link">Delete</Button>
+        <span>Delete</span>
       </Popconfirm>
 
       <Link
@@ -89,10 +93,14 @@ const Article = () => {
       <div className={classes['article__content']}>
         <div className={classes['article__header']}>
           <h3 className={classes['article__title']}>{title}</h3>
-          {!favorited ? (
-            <img className={classes['list__heart']} src={heart} alt="heart" />
+          {token ? (
+            !favorited ? (
+              <img className={classes['article__heart']} src={heart} alt="heart" onClick={handleLike} />
+            ) : (
+              <img className={classes['article__heart']} src={heartRed} alt="red heart" onClick={handleLike} />
+            )
           ) : (
-            <img className={classes['list__heart']} src={heartRed} alt="red heart" />
+            <img className={classes['article__heart']} src={heart} alt="heart" onClick={handleLike} />
           )}
           <span className={classes['article__counter']}>{favoritesCount}</span>
         </div>

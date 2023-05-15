@@ -26,6 +26,23 @@ export const fetchArticle = createAsyncThunk(
   }
 );
 
+export const fetchEditArticle = createAsyncThunk(
+  'articles/fetchEditArticle',
+  async function ([slug, token = null], { rejectWithValue, getState }) {
+    try {
+      const response = await blogApiService.getArticle(slug, token);
+      const { userState } = getState();
+
+      if (!userState.userData.username || response.article.author.username !== userState.userData.username) {
+        throw new Error('Доступ запрещен');
+      }
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const fetchNewArticle = createAsyncThunk(
   'articles/fetchNewArticle',
   async function ([articleData, token], { rejectWithValue }) {
@@ -65,6 +82,7 @@ export const fetchFavoriteArticle = createAsyncThunk(
     try {
       const response = await blogApiService.favoriteArticle(slug, token, doing);
       dispatch(setUpdatedArticle(response.data.article));
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -100,6 +118,9 @@ const articlesSlice = createSlice({
       state.status = 'loading';
       state.error = null;
     },
+    [fetchEditArticle.pending]: (state) => {
+      state.error = null;
+    },
     [fetchArticles.fulfilled]: (state, action) => {
       const { articles, articlesCount } = action.payload;
 
@@ -112,12 +133,24 @@ const articlesSlice = createSlice({
       state.currentArticle = article;
       state.status = 'resolved';
     },
+    [fetchFavoriteArticle.fulfilled]: (state, action) => {
+      const { currentArticle } = state;
+      const { article } = action.payload;
+      if (currentArticle && currentArticle.slug === article.slug) {
+        currentArticle.favorited = article.favorited;
+        currentArticle.favoritesCount = article.favoritesCount;
+      }
+    },
+
     [fetchArticles.rejected]: (state, action) => {
       state.status = 'rejected';
       state.error = action.payload;
     },
     [fetchArticle.rejected]: (state, action) => {
       state.status = 'rejected';
+      state.error = action.payload;
+    },
+    [fetchEditArticle.rejected]: (state, action) => {
       state.error = action.payload;
     },
   },

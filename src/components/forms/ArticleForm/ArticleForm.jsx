@@ -3,7 +3,7 @@ import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { fetchArticle, fetchNewArticle, fetchUpdateArticle } from '../../../store/articlesSlice';
+import { fetchEditArticle, fetchNewArticle, fetchUpdateArticle } from '../../../store/articlesSlice';
 import { resetStatus } from '../../../store/userSlice';
 import formClasses from '../forms.module.scss';
 
@@ -11,7 +11,7 @@ const ArticleForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { currentArticle } = useSelector((state) => state.articlesState);
+  const { currentArticle, error } = useSelector((state) => state.articlesState);
   const status = useSelector((state) => state.userState.status);
   const token = useSelector((state) => state.userState.userData.token);
   const { slug } = useParams();
@@ -19,10 +19,16 @@ const ArticleForm = () => {
 
   useEffect(() => {
     if (isEditing) {
-      dispatch(fetchArticle(slug));
+      dispatch(fetchEditArticle([slug]));
       reset(currentArticle);
     }
   }, []);
+
+  useEffect(() => {
+    if (error) {
+      navigate('/');
+    }
+  }, [error]);
 
   const {
     register,
@@ -59,6 +65,43 @@ const ArticleForm = () => {
     },
     [errors]
   );
+
+  const tagItems = fields.map((field, index) => (
+    <li key={index} className={formClasses['form__item']}>
+      <Controller
+        name={`tagList[${index}].name`}
+        control={control}
+        defaultValue={isEditing && currentArticle ? currentArticle.tagList[index] : field.name}
+        rules={{ required: 'Поле не может быть пустым' }}
+        render={({ field }) => (
+          <input {...field} className={`${formClasses['form__input']} ${formClasses['form__input--small']}`} />
+        )}
+      />
+      {fields.length === 1 ? null : (
+        <button
+          className={`${formClasses['form__btn-tag']} ${formClasses['form__btn-tag--delete']}`}
+          type="button"
+          onClick={() => remove(index)}
+        >
+          Delete
+        </button>
+      )}
+
+      {errors.tagList && errors.tagList[index]?.name && (
+        <p className={formClasses['form__error']}>{errors.tagList[index].name.message}</p>
+      )}
+
+      {fields.length - 1 === index && (
+        <button
+          className={`${formClasses['form__btn-tag']} ${formClasses['form__btn-tag--add']}`}
+          onClick={() => append({ name: '' })}
+          type="button"
+        >
+          Add tag
+        </button>
+      )}
+    </li>
+  ));
 
   useEffect(() => {
     if (status === 'registered') {
@@ -122,44 +165,7 @@ const ArticleForm = () => {
         </label>
 
         <div className={formClasses['form__label']}>Tags</div>
-        <ul>
-          {fields.map((field, index) => (
-            <li key={index} className={formClasses['form__item']}>
-              <Controller
-                name={`tagList[${index}].name`}
-                control={control}
-                defaultValue={isEditing ? currentArticle.tagList[index] : field.name}
-                rules={{ required: 'Поле не может быть пустым' }}
-                render={({ field }) => (
-                  <input {...field} className={`${formClasses['form__input']} ${formClasses['form__input--small']}`} />
-                )}
-              />
-              {fields.length === 1 ? null : (
-                <button
-                  className={`${formClasses['form__btn-tag']} ${formClasses['form__btn-tag--delete']}`}
-                  type="button"
-                  onClick={() => remove(index)}
-                >
-                  Delete
-                </button>
-              )}
-
-              {errors.tagList && errors.tagList[index]?.name && (
-                <p className={formClasses['form__error']}>{errors.tagList[index].name.message}</p>
-              )}
-
-              {fields.length - 1 === index && (
-                <button
-                  className={`${formClasses['form__btn-tag']} ${formClasses['form__btn-tag--add']}`}
-                  onClick={() => append({ name: '' })}
-                  type="button"
-                >
-                  Add tag
-                </button>
-              )}
-            </li>
-          ))}
-        </ul>
+        <ul>{tagItems}</ul>
 
         <button className={`${formClasses['form__btn']} ${formClasses['form__btn--small']}`} type="submit">
           Send

@@ -1,2 +1,2 @@
 vercel
-https://blog-psi-rose.vercel.app/
+https://blog-vovan4ik9696.vercel.app/

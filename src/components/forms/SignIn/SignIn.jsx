@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { fetchUserLog, resetStatus } from '../../../store/userSlice';
 import formClasses from '../forms.module.scss';
@@ -101,7 +101,7 @@ const SignIn = () => {
         </button>
       </form>
       <div className={formClasses['form__question']}>
-        Already have an account? <a href="#">Sign Up.</a>
+        Already have an account? <Link to={'/sign-up'}>Sign Up.</Link>
       </div>
     </div>
   );
